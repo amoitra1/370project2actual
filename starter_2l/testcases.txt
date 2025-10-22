@@ -1,0 +1,7 @@
+code is mostly done theres some small issue fix after submissions
+
+tests cases:
+
+link: simple valid test case
+linking: same global labe;
+alink: relocation
