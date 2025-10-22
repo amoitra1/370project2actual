@@ -187,6 +187,12 @@ int main(int argc, char *argv[]) {
     /* here is an example of using printHexToFile. This will print a
        machine code word / number in the proper hex format to the output file */
     //printHexToFile(outFilePtr, 123);
+	for (i = 0; i < combfiles.textSize; ++i) {
+        printHexToFile(outFilePtr, combfiles.text[i]);
+    }
+    for (i = 0; i < combfiles.dataSize; ++i) {
+        printHexToFile(outFilePtr, combfiles.data[i]);
+    }
 
 } // main
 
