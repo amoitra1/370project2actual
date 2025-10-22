@@ -5,3 +5,6 @@ tests cases:
 link: simple valid test case
 linking: same global labe;
 alink: relocation
+
+fixed errors - simple really one of them was in 4.5 errors section and another was that my relocation table was messed up i
+now only focus on test cases

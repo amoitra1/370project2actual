@@ -194,6 +194,9 @@ int main(int argc, char *argv[]) {
 	for (i = 0; i < numfiles; ++i) {
         for (j = 0; j < files[i].symbolTableSize; ++j) {
 			SymbolTableEntry *symtab = &files[i].symbolTable[j]; // so to access stuff inside symtab i would do symtab->...
+			if (strcmp(symtab->label, "Stack") == 0 && (symtab->location == 'T' || symtab->location == 'D')) {
+				exit(1);
+			}
 			if (symtab->location == 'T' || symtab->location == 'D') {
                 unsigned int addressoflabel;
                 if (symtab->location == 'T') {
@@ -224,7 +227,9 @@ int main(int argc, char *argv[]) {
 
             unsigned int tgtind; // for etxt and data
             if (fill == 1) {
-                tgtind = files[i].dataStartingLine + reltab->offset;
+                //tgtind = files[i].dataStartingLine + reltab->offset;
+				unsigned int datab = files[i].dataStartingLine - totalnumtexts;
+				tgtind = datab + reltab->offset;
             } 
 			else {
                 tgtind = files[i].textStartingLine + reltab->offset;
@@ -261,18 +266,27 @@ int main(int argc, char *argv[]) {
                 resolved = outaddress;
             } 
 			else {
-				if ((unsigned int)original < files[i].textSize) {
+				unsigned int orig16 = (unsigned int)original & 0xFFFF;
+				/*if ((unsigned int)original < files[i].textSize) {
                     resolved = files[i].textStartingLine + (unsigned int)original;
                 }
 				else {
                     unsigned int datain = (unsigned int)original - files[i].textSize;
 					//resolved = files[i].textStartingLine + (unsigned int)original;
                     resolved = files[i].dataStartingLine + datain;
-                }
+                }*/
+				if (orig16 < files[i].textSize) {
+					resolved = files[i].textStartingLine + orig16;
+				}
+				else {
+					unsigned int datain = orig16 - files[i].textSize;
+					resolved = files[i].dataStartingLine + datain;
+				}
             }
             if (fill == 1) {
                 combfiles.data[tgtind] = (int)resolved;
-            } else {
+            } 
+			else {
                 int word = combfiles.text[tgtind];
                 word = (word & 0xFFFF0000) | ((int)resolved & 0xFFFF);
                 combfiles.text[tgtind] = word;
