@@ -180,9 +180,42 @@ int main(int argc, char *argv[]) {
     } // for data
 
 	// build a map of globals basically like symbol table
-
+	unsigned int counter = 0;
+	unsigned int address[MAXSIZE * MAXFILES];
+	char labels[MAXSIZE * MAXFILES][7];
+	/*struct SymbolTableEntry { for reference
+		char label[7];
+		char location;
+		unsigned int offset;
+	};*/
+	for (i = 0; i < numfiles; ++i) {
+        for (j = 0; j < files[i].symbolTableSize; ++j) {
+			SymbolTableEntry *symtab = &files[i].symbolTable[j]; // so to access stuff inside symtab i would do symtab->...
+			if (symtab->location == 'T' || symtab->location == 'D') {
+                unsigned int addressoflabel;
+                if (symtab->location == 'T') {
+                    addressoflabel = files[i].textStartingLine + symtab->offset;
+                } 
+				else {
+                    addressoflabel = files[i].dataStartingLine + symtab->offset;
+                }
+                for (int k = 0; k < counter; ++k) {
+                    if (strcmp(labels[k], symtab->label) == 0) {
+                        exit(1);
+                    }
+                }
+                strcpy(labels[counter], symtab->label); // flipped look at 2a
+                address[counter] = addressoflabel;
+                counter++;
+            }
+		}
+	}
 	// relocation table
-
+	for (i = 0; i < numfiles; ++i) {
+        for (j = 0; j < files[i].relocationTableSize; ++j) {
+            RelocationTableEntry *reltab = &files[i].relocTable[j];
+		}
+	}
 	// printing
     /* here is an example of using printHexToFile. This will print a
        machine code word / number in the proper hex format to the output file */
