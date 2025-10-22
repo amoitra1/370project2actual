@@ -148,10 +148,45 @@ int main(int argc, char *argv[]) {
 	//    Begin the linking process
 	//    Happy coding!!!
 	unsigned int numfiles = (unsigned int)(argc - 2);
+	unsigned int totalnumtexts = 0;
+	unsigned int totalnumdata = 0;
 
+	// need to get start locations first
+	for (i = 0; i < numfiles; ++i) {
+        files[i].textStartingLine = totalnumtexts;
+        totalnumtexts += files[i].textSize;
+    }
+    for (i = 0; i < numfiles; ++i) {
+        files[i].dataStartingLine = totalnumtexts + totalnumdata;
+        totalnumdata += files[i].dataSize;
+    }
+
+	// need to then copy text and copy data
+	CombinedFiles combfiles;
+    combfiles.textSize = totalnumtexts;
+    combfiles.dataSize = totalnumdata;
+    combfiles.symbolTableSize = 0;
+    combfiles.relocationTableSize = 0;
+
+	for (i = 0; i < totalnumtexts; ++i) {
+        for (j = 0; j < files[i].textSize; ++j) {
+            combfiles.text[files[i].textStartingLine + j] = files[i].text[j];
+        }
+    } // fpr text
+	for (i = 0; i < totalnumdata; ++i) {
+        for (j = 0; j < files[i].textSize; ++j) {
+            combfiles.text[files[i].textStartingLine + j] = files[i].text[j];
+        }
+    } // for data
+
+	// build a map of globals basically like symbol table
+
+	// relocation table
+
+	// printing
     /* here is an example of using printHexToFile. This will print a
        machine code word / number in the proper hex format to the output file */
-    printHexToFile(outFilePtr, 123);
+    //printHexToFile(outFilePtr, 123);
 
 } // main
 
