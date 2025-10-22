@@ -168,21 +168,24 @@ int main(int argc, char *argv[]) {
     combfiles.symbolTableSize = 0;
     combfiles.relocationTableSize = 0;
 
-	for (i = 0; i < totalnumtexts; ++i) {
-        for (j = 0; j < files[i].textSize; ++j) {
-            combfiles.text[files[i].textStartingLine + j] = files[i].text[j];
-        }
-    } // fpr text
-	for (i = 0; i < totalnumdata; ++i) {
-        for (j = 0; j < files[i].textSize; ++j) {
-            combfiles.text[files[i].textStartingLine + j] = files[i].text[j];
-        }
-    } // for data
+	for (i = 0; i < numfiles; ++i) {
+		for (j = 0; j < files[i].textSize; ++j) {
+			combfiles.text[files[i].textStartingLine + j] = files[i].text[j];
+		}
+	} // fpr text
+	for (i = 0; i < numfiles; ++i) {
+		unsigned int alldata = files[i].dataStartingLine - totalnumtexts;  /* <-- key fix */
+		for (j = 0; j < files[i].dataSize; ++j) {
+			combfiles.data[alldata + j] = files[i].data[j];
+		}
+	} // for data, if not replace with same logic as text
 
 	// build a map of globals basically like symbol table
 	unsigned int counter = 0;
 	unsigned int address[MAXSIZE * MAXFILES];
 	char labels[MAXSIZE * MAXFILES][7];
+	unsigned int addressofstack = totalnumtexts + totalnumdata;
+	unsigned int iterator;
 	/*struct SymbolTableEntry { for reference
 		char label[7];
 		char location;
@@ -199,8 +202,8 @@ int main(int argc, char *argv[]) {
 				else {
                     addressoflabel = files[i].dataStartingLine + symtab->offset;
                 }
-                for (int k = 0; k < counter; ++k) {
-                    if (strcmp(labels[k], symtab->label) == 0) {
+                for (iterator = 0; iterator < counter; ++iterator) {
+                    if (strcmp(labels[iterator], symtab->label) == 0) {
                         exit(1);
                     }
                 }
@@ -214,6 +217,66 @@ int main(int argc, char *argv[]) {
 	for (i = 0; i < numfiles; ++i) {
         for (j = 0; j < files[i].relocationTableSize; ++j) {
             RelocationTableEntry *reltab = &files[i].relocTable[j];
+			int fill = 0;
+            if (strcmp(reltab->inst, ".fill") == 0) {
+                fill = 1;
+            }
+
+            unsigned int tgtind; // for etxt and data
+            if (fill == 1) {
+                tgtind = files[i].dataStartingLine + reltab->offset;
+            } 
+			else {
+                tgtind = files[i].textStartingLine + reltab->offset;
+            }
+
+            int original;
+			if (fill == 1) {
+				original = combfiles.data[tgtind];
+			} 
+			else {
+				int word = combfiles.text[tgtind];
+				unsigned int lowsixt = (unsigned int)word & 0xFFFF;
+				original = (int)lowsixt;
+			}
+
+            unsigned int resolved = 0;
+            int global = (reltab->label[0] >= 'A' && reltab->label[0] <= 'Z');
+            if (strcmp(reltab->label, "Stack") == 0) {
+                resolved = addressofstack;
+            } 
+			else if (global) {
+                int found = 0;
+                unsigned int outaddress = 0;
+                for (iterator = 0; iterator < counter; ++iterator) {
+                    if (strcmp(labels[iterator], reltab->label) == 0) {
+                        outaddress = address[iterator];
+                        found = 1;
+                        break;
+                    }
+                }
+                if (found == 0) {
+                    exit(1);
+                }
+                resolved = outaddress;
+            } 
+			else {
+				if ((unsigned int)original < files[i].textSize) {
+                    resolved = files[i].textStartingLine + (unsigned int)original;
+                }
+				else {
+                    unsigned int datain = (unsigned int)original - files[i].textSize;
+					//resolved = files[i].textStartingLine + (unsigned int)original;
+                    resolved = files[i].dataStartingLine + datain;
+                }
+            }
+            if (fill == 1) {
+                combfiles.data[tgtind] = (int)resolved;
+            } else {
+                int word = combfiles.text[tgtind];
+                word = (word & 0xFFFF0000) | ((int)resolved & 0xFFFF);
+                combfiles.text[tgtind] = word;
+            }
 		}
 	}
 	// printing
