@@ -1,1 +1,2 @@
-    .fill 10
+foo .fill 20
+    halt

@@ -1,3 +1,3 @@
-    beq 0 0 skip
+    lw 0 1 data
     halt
-skip add 0 0 0
+data .fill 0

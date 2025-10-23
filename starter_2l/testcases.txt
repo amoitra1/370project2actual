@@ -8,3 +8,7 @@ alink: relocation
 
 fixed errors - simple really one of them was in 4.5 errors section and another was that my relocation table was messed up i
 now only focus on test cases
+
+tmr figure out what cases we are covering and what we are not
+
+also for recursive, run through lc2k simulator and look at the tree we drew for each combinatorial function call all the way to the base case and sww where we are wrong

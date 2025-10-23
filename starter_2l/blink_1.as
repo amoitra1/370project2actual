@@ -1,2 +1,2 @@
-foo .fill 20
-    halt
+func add 1 1 1
+     halt

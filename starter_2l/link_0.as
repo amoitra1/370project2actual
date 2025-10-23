@@ -1,2 +1,2 @@
-    add 0 0 1
+foo .fill 10
     halt

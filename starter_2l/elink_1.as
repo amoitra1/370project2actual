@@ -1,2 +1,1 @@
-val .fill data
-data .fill 42
+val .fill 42

@@ -1,2 +1,3 @@
-    add 0 0 0
-foo .fill 1
+A .fill 11
+B .fill 22
+    halt
