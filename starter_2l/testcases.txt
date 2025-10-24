@@ -181,3 +181,16 @@ Bug "B" with Test "alink"
 Bug "A" with Test "clink"
 Bug "J" with Test "mlink"
 Bug "I" with Test "ulink"
+
+
+changed:
+saving r4
+pop strcture
+saving first result
+
+
+---
+needed to do lw	0	5	zero
+i think fixed now
+
+20/20 bless issue was with stack
