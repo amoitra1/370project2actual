@@ -12,3 +12,172 @@ now only focus on test cases
 tmr figure out what cases we are covering and what we are not
 
 also for recursive, run through lc2k simulator and look at the tree we drew for each combinatorial function call all the way to the base case and sww where we are wrong
+
+alink_0.as
+    lw 0 1 val
+    halt
+
+alink_1.as
+val .fill 42
+
+blink_0.as
+foo .fill 10
+
+blink_1.as
+foo .fill 11
+    halt
+
+clink_0.as
+Stack .fill 10
+    halt
+
+dlink_0.as
+    lw 0 1 Stack
+    halt
+
+elink_0.as
+    lw 0 1 Val
+    halt
+Val .fill 3
+
+elink_1.as
+Val .fill 10
+
+flink_0.as
+    lw 0 1 miss
+    halt
+
+glink_0.as
+    lw 0 1 A
+    halt
+A .fill 0
+
+glink_1.as
+B .fill 10
+
+hlink_0.as
+    add 1 1 2
+    beq 0 0 next
+next .fill 5
+    halt
+
+ilink_0.as
+stack .fill 9
+    lw 0 1 stack
+    add 1 1 1
+    halt
+
+jlink_0.as
+    lw 0 1 Stack
+    lw 0 2 Stack
+    beq 1 2 equal
+    add 1 1 1
+equal halt
+
+klink_0.as
+    lw 0 1 val
+    add 1 1 2
+    beq 1 2 done
+    halt
+val .fill 5
+
+klink_1.as
+val .fill 15
+other .fill 100
+    halt
+
+link_0.as
+    lw 0 1 val
+    lw 0 2 val
+    beq 1 2 done
+    add 1 1 1
+done halt
+
+link_1.as
+val .fill 42
+x .fill 3
+y .fill 7
+
+linking_0.as
+foo .fill 10
+foo .fill 20
+bar .fill 30
+    halt
+
+linking_1.as
+baz .fill 40
+    halt
+
+llink_0.as
+    lw 0 1 val
+    lw 0 2 Stack
+    beq 1 2 same
+    add 1 2 3
+same halt
+val .fill 0
+
+llink_1.as
+val .fill 12
+next .fill 7
+
+mlink_0.as
+    lw 0 1 A
+    lw 0 2 B
+    add 1 2 3
+    halt
+A .fill 0
+B .fill 1
+
+mlink_1.as
+A .fill 99
+C .fill 123
+    halt
+
+nlink_0.as
+    add 1 2 3
+    lw 0 1 data
+    lw 0 2 more
+    add 1 2 3
+    beq 1 3 skip
+skip halt
+data .fill 5
+more .fill 10
+
+olink_0.as
+    lw 0 1 foo
+    lw 0 2 bar
+    jalr 2 7
+    halt
+foo .fill 2
+bar .fill 4
+
+olink_1.as
+foo .fill 20
+bar .fill 40
+baz .fill 80
+
+count5_0.as
+	lw	0	1	five
+	lw	0	4	SubAdr
+start	jalr	4	7
+	beq	0	1	done
+	beq	0	0	start
+done	halt
+five	.fill	5
+
+count5_1.as
+subOne	lw	0	2	neg1
+	add	1	2	1
+	jalr	7	6
+neg1	.fill	-1
+SubAdr	.fill	subOne
+
+
+
+
+
+Bug "D" with Test "dlink"
+Bug "B" with Test "alink"
+Bug "A" with Test "clink"
+Bug "J" with Test "mlink"
+Bug "I" with Test "ulink"
